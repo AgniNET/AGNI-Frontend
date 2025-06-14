@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AGNI Input Panel</title>
+</head>
+<body>
+  <h2>AGNI Panel (Mobile Web App)</h2>
+
+  <form id="agniForm">
+    <label>Text Input:</label><br>
+    <textarea id="inputText" rows="5" cols="30"></textarea><br><br>
+
+    <label>Upload File (optional):</label><br>
+    <input type="file" id="fileInput"><br><br>
+
+    <button type="submit">Send to AGNI</button>
+  </form>
+
+  <h3>Output:</h3>
+  <div id="output"></div>
+
+  <script>
+    const form = document.getElementById('agniForm');
+    const output = document.getElementById('output');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const text = document.getElementById('inputText').value;
+      const fileInput = document.getElementById('fileInput');
+      const formData = new FormData();
+      formData.append('text', text);
+      if (fileInput.files.length > 0) {
+        formData.append('file', fileInput.files[0]);
+      }
+
+      const response = await fetch('https://<YOUR-RENDER-URL>/process', {
+        method: 'POST',
+        body: formData
+      });
+
+      const result = await response.json();
+      output.innerHTML = `
+        <p><strong>Text Output:</strong> ${result.text_output}</p>
+        <p><strong>Download Link:</strong> <a href="${result.file_url}" target="_blank">Click to view</a></p>
+      `;
+    });
+  </script>
+</body>
+</html>
