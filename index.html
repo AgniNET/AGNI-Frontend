@@ -15,18 +15,20 @@
       color: #333;
     }
 
+    select, textarea, button {
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
     textarea {
       width: 100%;
       height: 100px;
       padding: 10px;
-      font-size: 16px;
       resize: vertical;
     }
 
     button {
       padding: 10px 20px;
-      margin-top: 10px;
-      font-size: 16px;
       background-color: #007bff;
       color: white;
       border: none;
@@ -43,10 +45,23 @@
       background-color: #e9ecef;
       border-radius: 5px;
     }
+
+    label {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>Ask AGNI </h1>
+  <h1>Ask AGNI</h1>
+
+  <!-- 🔽 Dropdown for selecting mode -->
+  <label for="mode">Choose Mode:</label>
+  <select id="mode" onchange="handleModeChange()">
+    <option value="gemini" selected>Gemini</option>
+    <option value="tidio">Tidio</option>
+  </select>
+
+  <!-- Input Section -->
   <textarea id="prompt" placeholder="Type your question here..."></textarea>
   <br />
   <button onclick="sendPrompt()">Send</button>
@@ -54,7 +69,27 @@
   <div id="response" class="response" style="display: none;"></div>
 
   <script>
+    function handleModeChange() {
+      const mode = document.getElementById('mode').value;
+      const textarea = document.getElementById('prompt');
+      const responseDiv = document.getElementById('response');
+      
+      if (mode === 'gemini') {
+        textarea.disabled = false;
+        textarea.placeholder = "Type your question here...";
+        responseDiv.style.display = 'none';
+      } else if (mode === 'tidio') {
+        textarea.disabled = true;
+        textarea.placeholder = "Use the chat widget in the bottom-right corner.";
+        responseDiv.style.display = 'block';
+        responseDiv.innerHTML = `<strong>Use the Tidio chat widget below ⬇️</strong>`;
+      }
+    }
+
     async function sendPrompt() {
+      const mode = document.getElementById('mode').value;
+      if (mode !== 'gemini') return;
+
       const prompt = document.getElementById('prompt').value;
       const responseDiv = document.getElementById('response');
       responseDiv.style.display = 'block';
@@ -80,7 +115,8 @@
       }
     }
   </script>
-  <!-- Tidio Live Chat -->
-<script src="//code.tidio.co/6itqp8smaiqyvu7cxckgydxqqxcqxuhl.js" async></script>
+
+  <!-- ✅ Tidio Live Chat Widget Script -->
+  <script src="//code.tidio.co/6itqp8smaiqyvu7cxckgydxqqxcqxuhl.js" async></script>
 </body>
 </html>
